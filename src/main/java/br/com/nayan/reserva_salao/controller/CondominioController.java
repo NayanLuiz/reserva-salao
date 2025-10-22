@@ -7,10 +7,7 @@ import br.com.nayan.reserva_salao.dto.ReservaResponseDTO;
 import br.com.nayan.reserva_salao.service.CondominioService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -28,5 +25,9 @@ public class CondominioController{
         CondominioResponseDTO condominioResponseDTO = condominioService.create(condominioRequestDTO);
         return ResponseEntity.ok(condominioResponseDTO);
     }
-
+    @GetMapping("/{id}")
+    public ResponseEntity<CondominioResponseDTO> getCondominioById(@PathVariable Long id){
+        CondominioResponseDTO condominioResponseDTO = condominioService.getById(id);
+        return ResponseEntity.ok(condominioResponseDTO);
+    }
 }

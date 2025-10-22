@@ -4,6 +4,7 @@ import br.com.nayan.reserva_salao.dto.SalaoRequestDTO;
 import br.com.nayan.reserva_salao.dto.SalaoResponseDTO;
 import br.com.nayan.reserva_salao.entity.Salao;
 import br.com.nayan.reserva_salao.repository.SalaoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,17 @@ public class SalaoService {
                 .id(salaoSalvo.getId())
                 .area(salaoSalvo.getArea())
                 .condominio(salaoSalvo.getCondominio().getNome())
+                .build();
+    }
+
+    public SalaoResponseDTO getById(Long id) {
+        Salao salao = salaoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Salão com ID " + id + " não encontrado."));
+
+        return SalaoResponseDTO.builder()
+                .id(salao.getId())
+                .area(salao.getArea())
+                .condominio(salao.getCondominio().getNome())
                 .build();
     }
 }

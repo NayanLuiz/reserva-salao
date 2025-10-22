@@ -5,6 +5,7 @@ import br.com.nayan.reserva_salao.dto.CasaResponseDTO;
 import br.com.nayan.reserva_salao.entity.Casa;
 import br.com.nayan.reserva_salao.entity.Condominio;
 import br.com.nayan.reserva_salao.repository.CasaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,7 @@ public class CasaService {
 
         //Logica para criar casa
         if(casaRepository.existsByNumero(casaDTO.getNumero())){
-            throw new IllegalArgumentException("Casa com esse numero ja existe.");
+            throw new EntityNotFoundException("Casa com esse numero ja existe.");
         }
         Condominio condominio = condominioService.getByName(casaDTO.getCondominioNome());
 
@@ -48,6 +49,20 @@ public class CasaService {
                 .numero(casaSalva.getNumero())
                 .responsavel(casaDTO.getResponsavel())
                 .condominioNome(casaSalva.getCondominio().getNome())
+                .build();
+    }
+
+    public CasaResponseDTO getById(Long id) {
+        Optional<Casa> casaOpt = casaRepository.findById(id);
+        if (casaOpt.isEmpty()) {
+            throw new EntityNotFoundException("Casa não encontrada com o ID: " + id);
+        }
+        Casa casa = casaOpt.get();
+        return CasaResponseDTO.builder()
+                .id(casa.getId())
+                .numero(casa.getNumero())
+                .responsavel(casa.getResponsavel())
+                .condominioNome(casa.getCondominio().getNome())
                 .build();
     }
 }

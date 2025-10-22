@@ -22,6 +22,6 @@ public class Casa {
     private String responsavel;
 
     @ManyToOne
-    @JoinColumn(name = "condominio_id", nullable = false)
+    @JoinColumn(name = "condominio_id", nullable = false, foreignKey = @ForeignKey(name = "fk_casa_condominio"))
     private Condominio condominio;
 }

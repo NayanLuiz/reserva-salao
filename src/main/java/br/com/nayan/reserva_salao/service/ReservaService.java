@@ -10,6 +10,7 @@ import br.com.nayan.reserva_salao.repository.CasaRepository;
 import br.com.nayan.reserva_salao.repository.CondominioRepository;
 import br.com.nayan.reserva_salao.repository.ReservaRepository;
 import br.com.nayan.reserva_salao.repository.SalaoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,10 +46,14 @@ public class ReservaService {
         //Logica para criar reserva
 
         Casa casa = casaRepository.findById(reservaDTO.getCasaId()).orElseThrow(() ->
-                new IllegalArgumentException("Casa nao encontrada id com o: " + reservaDTO.getCasaId())
+                new EntityNotFoundException("Casa nao encontrada id com o: " + reservaDTO.getCasaId())
         );
-        Condominio condominio = condominioRepository.findById(reservaDTO.getCondominioId()).orElseThrow();
-        Salao salao = salaoRepository.findById(reservaDTO.getSalaoId()).orElseThrow();
+        Condominio condominio = condominioRepository.findById(reservaDTO.getCondominioId()).orElseThrow(()->
+                new EntityNotFoundException("Condominio nao encontrado com o id: " + reservaDTO.getCondominioId())
+        );
+        Salao salao = salaoRepository.findById(reservaDTO.getSalaoId()).orElseThrow(( )->
+            new EntityNotFoundException("Salao nao encontrado com o id: " + reservaDTO.getSalaoId())
+        );
 
         Reserva reserva = new Reserva();
         reserva.setCasa(casa);
@@ -67,4 +72,17 @@ public class ReservaService {
                 .build();
     }
 
+    public ReservaResponseDTO getById(Long id) {
+        Reserva reserva = reservaRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Reserva nao encontrada com o id: " + id)
+        );
+
+        return ReservaResponseDTO.builder()
+                .id(reserva.getId())
+                .casaId(reserva.getCasa().getId())
+                .salaoId(reserva.getSalao().getId())
+                .condominioId(reserva.getCondominio().getId())
+                .data(reserva.getData())
+                .build();
+    }
 }

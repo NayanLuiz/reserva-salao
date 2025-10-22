@@ -10,6 +10,7 @@ import br.com.nayan.reserva_salao.entity.Salao;
 import br.com.nayan.reserva_salao.repository.CasaRepository;
 import br.com.nayan.reserva_salao.repository.CondominioRepository;
 import br.com.nayan.reserva_salao.repository.SalaoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -70,7 +71,35 @@ public class CondominioService {
 
     public Condominio getByName(String nome) {
         return condominioRepository.findByNome(nome)
-                .orElseThrow(() -> new IllegalArgumentException("Condominio nao encontrado."));
+                .orElseThrow(() -> new EntityNotFoundException("Condominio nao encontrado."));
+    }
+
+    public CondominioResponseDTO getById(Long id) {
+        Condominio condominio = condominioRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Condominio nao encontrado."));
+
+        return CondominioResponseDTO.builder()
+                .id(condominio.getId())
+                .nome(condominio.getNome())
+                .casa(condominio.getCasa().stream().map(casa -> {
+                    return CasaResponseDTO.builder()
+                            .id(casa.getId())
+                            .numero(casa.getNumero())
+                            .responsavel(casa.getResponsavel())
+                            .condominioNome(condominio.getNome())
+                            .build();
+                        }
+                        )
+                        .toList())
+                .salao(condominio.getSalao().stream().map(salao -> {
+                    return SalaoResponseDTO.builder()
+                            .id(salao.getId())
+                            .area(salao.getArea())
+                            .condominio(condominio.getNome())
+                            .build();
+                })
+                .toList())
+                .build();
     }
 }
 
