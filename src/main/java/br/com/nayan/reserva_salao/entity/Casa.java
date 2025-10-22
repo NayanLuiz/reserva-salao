@@ -16,7 +16,7 @@ public class Casa {
     private Long id;
 
     @Column(nullable = false)
-    private Integer numero;
+    private Long numero;
 
     @Column(nullable = false, length = 100)
     private String responsavel;

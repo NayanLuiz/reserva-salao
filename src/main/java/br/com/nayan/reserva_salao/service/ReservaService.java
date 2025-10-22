@@ -45,7 +45,7 @@ public class ReservaService {
         //Logica para criar reserva
 
         Casa casa = casaRepository.findById(reservaDTO.getCasaId()).orElseThrow(() ->
-                new IllegalArgumentException("Casa nao encontrada com o id: " + reservaDTO.getCasaId())
+                new IllegalArgumentException("Casa nao encontrada id com o: " + reservaDTO.getCasaId())
         );
         Condominio condominio = condominioRepository.findById(reservaDTO.getCondominioId()).orElseThrow();
         Salao salao = salaoRepository.findById(reservaDTO.getSalaoId()).orElseThrow();

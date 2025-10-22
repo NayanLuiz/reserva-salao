@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface CondominioRepository extends JpaRepository<Condominio, Long> {
     Optional<Condominio> findByNome(String nome);
+    Boolean existsByNome(String nome);
 }

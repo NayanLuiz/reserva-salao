@@ -11,4 +11,5 @@ import java.util.List;
 public interface CasaRepository extends JpaRepository<Casa, Long> {
     List<Casa> findByCondominio(Condominio condominio);
     List<Casa> findByResponsavelContainingIgnoreCase(String nome);
+    Boolean existsByNumero(Long numero);
 }
