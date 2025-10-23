@@ -1,6 +1,5 @@
 package br.com.nayan.reserva_salao.controller;
 
-import br.com.nayan.reserva_salao.dto.CasaResponseDTO;
 import br.com.nayan.reserva_salao.dto.SalaoRequestDTO;
 import br.com.nayan.reserva_salao.dto.SalaoResponseDTO;
 import br.com.nayan.reserva_salao.service.SalaoService;
@@ -30,4 +29,16 @@ public class SalaoController {
         SalaoResponseDTO salaoResponseDTO = salaoService.getById(id);
         return ResponseEntity.ok(salaoResponseDTO);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSalaoById(@PathVariable Long id){
+        salaoService.deleteSalaoById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+//    @PutMapping("/{id}")
+//    public ResponseEntity<SalaoResponseDTO> updateSalao(@PathVariable Long id, SalaoRequestDTO requestDTO) {
+//        SalaoResponseDTO salaoResponseDTO = salaoService.putById(id, requestDTO);
+//        return ResponseEntity.ok(salaoResponseDTO);
+//    }
 }

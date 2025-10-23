@@ -6,8 +6,8 @@ import java.time.LocalDate;
 
 @Data
 public class ReservaRequestDTO {
-    private Long casaId;
-    private Long condominioId;
-    private Long salaoId;
+    private Long numero;
+    private String condominio;
+    private String salao;
     private LocalDate data;
 }

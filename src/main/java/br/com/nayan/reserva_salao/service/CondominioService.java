@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class CondominioService {
@@ -100,6 +99,10 @@ public class CondominioService {
                 })
                 .toList())
                 .build();
+    }
+
+    public void deleteCondominioById(Long id){
+        condominioRepository.deleteById(id);
     }
 }
 

@@ -50,4 +50,15 @@ public class SalaoService {
                 .condominio(salao.getCondominio().getNome())
                 .build();
     }
+
+    public void deleteSalaoById(Long id){
+//        if(!salaoRepository.existsById(id)){
+//            throw new EntityNotFoundException("Salão com ID " + id + " não encontrado.");
+//        }
+        salaoRepository.deleteById(id);
+    }
+
+//    public SalaoResponseDTO putById(Long id, SalaoRequestDTO requestDTO) {
+//
+//    }
 }

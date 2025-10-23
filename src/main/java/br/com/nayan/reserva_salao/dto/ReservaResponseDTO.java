@@ -9,8 +9,8 @@ import java.time.LocalDate;
 @Builder
 public class ReservaResponseDTO {
     private Long id;
-    private Long casaId;
-    private Long condominioId;
-    private Long salaoId;
+    private Long numero;
+    private String condominio;
+    private String salao;
     private LocalDate data;
 }

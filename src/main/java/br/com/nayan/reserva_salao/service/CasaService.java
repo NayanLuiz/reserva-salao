@@ -65,4 +65,30 @@ public class CasaService {
                 .condominioNome(casa.getCondominio().getNome())
                 .build();
     }
+
+    public void deleteCasaById(Long id){
+//        if(!casaRepository.existsById(id)){
+//            throw new EntityNotFoundException("Casa nao encontrada com o id: " + id);
+//        }
+        casaRepository.deleteById(id);
+    }
+
+    public CasaResponseDTO putById(Long id, CasaRequestDTO casaDTO){
+        Casa casa = casaRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Casa nao encontrada com o id: " + id)
+        );
+
+        casa.setNumero(casaDTO.getNumero());
+        casa.setResponsavel(casaDTO.getResponsavel());
+        Casa casaAtualizada = casaRepository.save(casa);
+
+        return CasaResponseDTO.builder()
+                .id(casaAtualizada.getId())
+                .numero(casaAtualizada.getNumero())
+                .responsavel(casaAtualizada.getResponsavel())
+                .condominioNome(casaAtualizada.getCondominio().getNome())
+                .build();
+    }
+
+
 }

@@ -2,7 +2,6 @@ package br.com.nayan.reserva_salao.controller;
 
 import br.com.nayan.reserva_salao.dto.ReservaRequestDTO;
 import br.com.nayan.reserva_salao.dto.ReservaResponseDTO;
-import br.com.nayan.reserva_salao.dto.SalaoResponseDTO;
 import br.com.nayan.reserva_salao.service.ReservaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -30,4 +29,17 @@ public class ReservaController {
         ReservaResponseDTO reservaResponseDTO = reservaService.getById(id);
         return ResponseEntity.ok(reservaResponseDTO);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteReservaById(@PathVariable Long id) {
+        reservaService.deleteReservaById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ReservaResponseDTO> updateReserva(@PathVariable Long id, ReservaRequestDTO requestDTO){
+        ReservaResponseDTO reservaResponseDTO = reservaService.putById(id, requestDTO);
+        return ResponseEntity.ok(reservaResponseDTO);
+    }
+
 }
