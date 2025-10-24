@@ -43,28 +43,13 @@ public class CondominioService {
         novoCondominio.setSalao(new ArrayList<Salao>());
         novoCondominio.setCasa(new ArrayList<Casa>());
 
-        Condominio condominioSalvo = condominioRepository.save(novoCondominio);
-
-        List<SalaoResponseDTO> list_salao = condominioSalvo.getSalao().stream().map(salao ->{
-            return SalaoResponseDTO.builder()
-                    .id(salao.getId())
-                    .area(salao.getArea())
-                    .build();
-        }).toList();
-
-        List<CasaResponseDTO> list_casa = condominioSalvo.getCasa().stream().map(casa ->{
-            return CasaResponseDTO.builder()
-                    .id(casa.getId())
-                    .numero(casa.getNumero())
-                    .responsavel(casa.getResponsavel())
-                    .build();
-        }).toList();
+        Condominio condominio = condominioRepository.save(novoCondominio);
 
         return CondominioResponseDTO.builder()
-                .id(condominioSalvo.getId())
-                .nome(condominioSalvo.getNome())
-                .salao(list_salao)
-                .casa(list_casa)
+                .id(condominio.getId())
+                .nome(condominio.getNome())
+                .salao(List.of())
+                .casa(List.of())
                 .build();
     }
 

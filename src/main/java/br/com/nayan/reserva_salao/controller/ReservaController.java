@@ -36,10 +36,10 @@ public class ReservaController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ReservaResponseDTO> updateReserva(@PathVariable Long id, ReservaRequestDTO requestDTO){
-        ReservaResponseDTO reservaResponseDTO = reservaService.putById(id, requestDTO);
-        return ResponseEntity.ok(reservaResponseDTO);
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<ReservaResponseDTO> updateReserva(@PathVariable Long id, ReservaRequestDTO requestDTO){
+//        ReservaResponseDTO reservaResponseDTO = reservaService.putById(id, requestDTO);
+//        return ResponseEntity.ok(reservaResponseDTO);
+//    }
 
 }
