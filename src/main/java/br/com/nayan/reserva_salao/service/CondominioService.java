@@ -4,9 +4,9 @@ import br.com.nayan.reserva_salao.dto.CasaResponseDTO;
 import br.com.nayan.reserva_salao.dto.CondominioRequestDTO;
 import br.com.nayan.reserva_salao.dto.CondominioResponseDTO;
 import br.com.nayan.reserva_salao.dto.SalaoResponseDTO;
-import br.com.nayan.reserva_salao.entity.Casa;
-import br.com.nayan.reserva_salao.entity.Condominio;
-import br.com.nayan.reserva_salao.entity.Salao;
+import br.com.nayan.reserva_salao.entity.CasaEntity;
+import br.com.nayan.reserva_salao.entity.CondominioEntity;
+import br.com.nayan.reserva_salao.entity.SalaoEntity;
 import br.com.nayan.reserva_salao.repository.CasaRepository;
 import br.com.nayan.reserva_salao.repository.CondominioRepository;
 import br.com.nayan.reserva_salao.repository.SalaoRepository;
@@ -38,48 +38,48 @@ public class CondominioService {
             throw new IllegalArgumentException("Condominio com esse nome ja existe.");
         }
 
-        Condominio novoCondominio = new Condominio();
-        novoCondominio.setNome(condominioDTO.getNome());
-        novoCondominio.setSalao(new ArrayList<Salao>());
-        novoCondominio.setCasa(new ArrayList<Casa>());
+        CondominioEntity novoCondominioEntity = new CondominioEntity();
+        novoCondominioEntity.setNome(condominioDTO.getNome());
+        novoCondominioEntity.setSalao(new ArrayList<SalaoEntity>());
+        novoCondominioEntity.setCasaEntity(new ArrayList<CasaEntity>());
 
-        Condominio condominio = condominioRepository.save(novoCondominio);
+        CondominioEntity condominioEntity = condominioRepository.save(novoCondominioEntity);
 
         return CondominioResponseDTO.builder()
-                .id(condominio.getId())
-                .nome(condominio.getNome())
+                .id(condominioEntity.getId())
+                .nome(condominioEntity.getNome())
                 .salao(List.of())
                 .casa(List.of())
                 .build();
     }
 
-    public Condominio getByName(String nome) {
+    public CondominioEntity getByName(String nome) {
         return condominioRepository.findByNome(nome)
                 .orElseThrow(() -> new EntityNotFoundException("Condominio nao encontrado."));
     }
 
     public CondominioResponseDTO getById(Long id) {
-        Condominio condominio = condominioRepository.findById(id)
+        CondominioEntity condominioEntity = condominioRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Condominio nao encontrado."));
 
         return CondominioResponseDTO.builder()
-                .id(condominio.getId())
-                .nome(condominio.getNome())
-                .casa(condominio.getCasa().stream().map(casa -> {
+                .id(condominioEntity.getId())
+                .nome(condominioEntity.getNome())
+                .casa(condominioEntity.getCasaEntity().stream().map(casa -> {
                     return CasaResponseDTO.builder()
                             .id(casa.getId())
                             .numero(casa.getNumero())
                             .responsavel(casa.getResponsavel())
-                            .condominioNome(condominio.getNome())
+                            .condominioNome(condominioEntity.getNome())
                             .build();
                         }
                         )
                         .toList())
-                .salao(condominio.getSalao().stream().map(salao -> {
+                .salao(condominioEntity.getSalao().stream().map(salao -> {
                     return SalaoResponseDTO.builder()
                             .id(salao.getId())
                             .area(salao.getArea())
-                            .condominio(condominio.getNome())
+                            .condominio(condominioEntity.getNome())
                             .build();
                 })
                 .toList())

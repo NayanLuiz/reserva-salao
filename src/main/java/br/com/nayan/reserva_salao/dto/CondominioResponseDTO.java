@@ -1,7 +1,5 @@
 package br.com.nayan.reserva_salao.dto;
 
-import br.com.nayan.reserva_salao.entity.Casa;
-import br.com.nayan.reserva_salao.entity.Salao;
 import lombok.Builder;
 import lombok.Data;
 

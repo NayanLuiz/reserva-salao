@@ -2,7 +2,7 @@ package br.com.nayan.reserva_salao.service;
 
 import br.com.nayan.reserva_salao.dto.SalaoRequestDTO;
 import br.com.nayan.reserva_salao.dto.SalaoResponseDTO;
-import br.com.nayan.reserva_salao.entity.Salao;
+import br.com.nayan.reserva_salao.entity.SalaoEntity;
 import br.com.nayan.reserva_salao.repository.SalaoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,26 +28,26 @@ public class SalaoService {
     }
         condominioService.getByName(salaoDTO.getCondominio());
 
-        Salao salao = new Salao();
+        SalaoEntity salao = new SalaoEntity();
         salao.setArea(salaoDTO.getArea());
-        salao.setCondominio(condominioService.getByName(salaoDTO.getCondominio()));
-        Salao salaoSalvo = salaoRepository.save(salao);
+        salao.setCondominioEntity(condominioService.getByName(salaoDTO.getCondominio()));
+        SalaoEntity salaoSalvo = salaoRepository.save(salao);
 
         return SalaoResponseDTO.builder()
                 .id(salaoSalvo.getId())
                 .area(salaoSalvo.getArea())
-                .condominio(salaoSalvo.getCondominio().getNome())
+                .condominio(salaoSalvo.getCondominioEntity().getNome())
                 .build();
     }
 
     public SalaoResponseDTO getById(Long id) {
-        Salao salao = salaoRepository.findById(id)
+        SalaoEntity salao = salaoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Salão com ID " + id + " não encontrado."));
 
         return SalaoResponseDTO.builder()
                 .id(salao.getId())
                 .area(salao.getArea())
-                .condominio(salao.getCondominio().getNome())
+                .condominio(salao.getCondominioEntity().getNome())
                 .build();
     }
 

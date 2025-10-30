@@ -2,12 +2,11 @@ package br.com.nayan.reserva_salao.service;
 
 import br.com.nayan.reserva_salao.dto.CondominioRequestDTO;
 import br.com.nayan.reserva_salao.dto.CondominioResponseDTO;
-import br.com.nayan.reserva_salao.entity.Casa;
-import br.com.nayan.reserva_salao.entity.Condominio;
-import br.com.nayan.reserva_salao.entity.Salao;
+import br.com.nayan.reserva_salao.entity.CasaEntity;
+import br.com.nayan.reserva_salao.entity.CondominioEntity;
+import br.com.nayan.reserva_salao.entity.SalaoEntity;
 import br.com.nayan.reserva_salao.repository.CasaRepository;
 import br.com.nayan.reserva_salao.repository.CondominioRepository;
-import br.com.nayan.reserva_salao.repository.ReservaRepository;
 import br.com.nayan.reserva_salao.repository.SalaoRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,13 +15,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -48,18 +45,18 @@ class CondominioServiceTest {
 
         CondominioRequestDTO condominioRequestDTO = buildCondominioDTO();
 
-        Casa casa = buildCasa();
-        Salao salao = buildSalao();
-        Condominio condominio = buildCondominio();
+        CasaEntity casaEntity = buildCasa();
+        SalaoEntity salao = buildSalao();
+        CondominioEntity condominioEntity = buildCondominio();
 
         when(condominioRepository.existsByNome(condominioRequestDTO.getNome()))
                 .thenReturn(false);
-        when(condominioRepository.save(any())).thenReturn(condominio);
+        when(condominioRepository.save(any())).thenReturn(condominioEntity);
 
         CondominioResponseDTO condominioResponseDTO = condominioService.create(condominioRequestDTO);
 
         assertThat(condominioResponseDTO).isNotNull();
-        assertThat(condominioResponseDTO.getId()).isEqualTo(condominio.getId());
+        assertThat(condominioResponseDTO.getId()).isEqualTo(condominioEntity.getId());
 
         verify(condominioRepository,times(1)).save(any());
     }
@@ -70,9 +67,6 @@ class CondominioServiceTest {
 
         CondominioRequestDTO condominioRequestDTO = buildCondominioDTO();
 
-        Casa casa = buildCasa();
-        Salao salao = buildSalao();
-        Condominio condominio = buildCondominio();
         condominioRequestDTO.setNome(null);
 
         Throwable throwable = catchThrowable(() -> {
@@ -87,12 +81,12 @@ class CondominioServiceTest {
     @DisplayName("Get condominium by id successfully")
     void getByIdSucessfuly() {
 
-        Condominio pedidoCondominio = buildCondominio();
-        pedidoCondominio.setSalao(List.of(buildSalao()));
-        pedidoCondominio.setCasa(List.of(buildCasa()));
+        CondominioEntity pedidoCondominioEntity = buildCondominio();
+        pedidoCondominioEntity.setSalao(List.of(buildSalao()));
+        pedidoCondominioEntity.setCasaEntity(List.of(buildCasa()));
 
-        when(condominioRepository.findById(pedidoCondominio.getId()))
-                .thenReturn(Optional.of(pedidoCondominio));
+        when(condominioRepository.findById(pedidoCondominioEntity.getId()))
+                .thenReturn(Optional.of(pedidoCondominioEntity));
 
         condominioService.getById(1L);
 
@@ -104,15 +98,15 @@ class CondominioServiceTest {
     @DisplayName("Get condominium by name successfully")
     void getByNameSucessfuly() {
 
-        Condominio pedidoCondominio = buildCondominio();
+        CondominioEntity pedidoCondominioEntity = buildCondominio();
 
-        when(condominioRepository.findByNome(pedidoCondominio.getNome()))
-                .thenReturn(Optional.of(pedidoCondominio));
+        when(condominioRepository.findByNome(pedidoCondominioEntity.getNome()))
+                .thenReturn(Optional.of(pedidoCondominioEntity));
 
-        Condominio condominio = condominioService.getByName(pedidoCondominio.getNome());
+        CondominioEntity condominioEntity = condominioService.getByName(pedidoCondominioEntity.getNome());
 
-        assertThat(condominio).isNotNull();
-        assertThat(condominio.getId()).isEqualTo(1L);
+        assertThat(condominioEntity).isNotNull();
+        assertThat(condominioEntity.getId()).isEqualTo(1L);
 
     }
 
@@ -120,9 +114,9 @@ class CondominioServiceTest {
     @DisplayName("Delete condominium by id successfully")
     void deleteCondominioById() {
 
-        Condominio condominio = buildCondominio();
+        CondominioEntity condominioEntity = buildCondominio();
 
-        condominioService.deleteCondominioById(condominio.getId());
+        condominioService.deleteCondominioById(condominioEntity.getId());
 
         verify(condominioRepository,times(1)).deleteById(any());
     }
@@ -134,32 +128,32 @@ class CondominioServiceTest {
         return condominioRequestDTO;
     }
 
-    private Condominio buildCondominio() {
-        Condominio condominio = new Condominio();
-        condominio.setId(1L);
-        condominio.setNome("Condominio A");
-        condominio.setSalao(List.of());
-        condominio.setCasa(List.of());
+    private CondominioEntity buildCondominio() {
+        CondominioEntity condominioEntity = new CondominioEntity();
+        condominioEntity.setId(1L);
+        condominioEntity.setNome("Condominio A");
+        condominioEntity.setSalao(List.of());
+        condominioEntity.setCasaEntity(List.of());
 
-        return condominio;
+        return condominioEntity;
     }
 
-    private Salao buildSalao(){
-        Salao salao = new Salao();
+    private SalaoEntity buildSalao(){
+        SalaoEntity salao = new SalaoEntity();
         salao.setId(1L);
         salao.setArea("Salao Principal");
-        salao.setCondominio(buildCondominio());
+        salao.setCondominioEntity(buildCondominio());
 
         return salao;
     }
 
-    private Casa buildCasa(){
-        Casa casa = new Casa();
-        casa.setId(1L);
-        casa.setNumero(101L);
-        casa.setResponsavel("Vinicius");
-        casa.setCondominio(buildCondominio());
+    private CasaEntity buildCasa(){
+        CasaEntity casaEntity = new CasaEntity();
+        casaEntity.setId(1L);
+        casaEntity.setNumero(101L);
+        casaEntity.setResponsavel("Vinicius");
+        casaEntity.setCondominioEntity(buildCondominio());
 
-        return casa;
+        return casaEntity;
     }
 }

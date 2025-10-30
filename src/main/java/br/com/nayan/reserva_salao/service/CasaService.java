@@ -2,8 +2,8 @@ package br.com.nayan.reserva_salao.service;
 
 import br.com.nayan.reserva_salao.dto.CasaRequestDTO;
 import br.com.nayan.reserva_salao.dto.CasaResponseDTO;
-import br.com.nayan.reserva_salao.entity.Casa;
-import br.com.nayan.reserva_salao.entity.Condominio;
+import br.com.nayan.reserva_salao.entity.CasaEntity;
+import br.com.nayan.reserva_salao.entity.CondominioEntity;
 import br.com.nayan.reserva_salao.repository.CasaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,35 +34,35 @@ public class CasaService {
 
         //Logica para criar casa
         if(casaRepository.existsByNumero(casaDTO.getNumero())){
-            throw new EntityNotFoundException("Casa com esse numero ja existe.");
+            throw new IllegalArgumentException("Casa com esse numero ja existe.");
         }
-        Condominio condominio = condominioService.getByName(casaDTO.getCondominioNome());
+        CondominioEntity condominioEntity = condominioService.getByName(casaDTO.getCondominioNome());
 
-        Casa novaCasa = new Casa();
-        novaCasa.setNumero(casaDTO.getNumero());
-        novaCasa.setResponsavel(casaDTO.getResponsavel());
-        novaCasa.setCondominio(condominio);
-        Casa casaSalva = casaRepository.save(novaCasa);
+        CasaEntity novaCasaEntity = new CasaEntity();
+        novaCasaEntity.setNumero(casaDTO.getNumero());
+        novaCasaEntity.setResponsavel(casaDTO.getResponsavel());
+        novaCasaEntity.setCondominioEntity(condominioEntity);
+        CasaEntity casaEntitySalva = casaRepository.save(novaCasaEntity);
 
         return CasaResponseDTO.builder()
-                .id(casaSalva.getId())
-                .numero(casaSalva.getNumero())
-                .responsavel(casaDTO.getResponsavel())
-                .condominioNome(casaSalva.getCondominio().getNome())
+                .id(casaEntitySalva.getId())
+                .numero(casaEntitySalva.getNumero())
+                .responsavel(casaEntitySalva.getResponsavel())
+                .condominioNome(casaEntitySalva.getCondominioEntity().getNome())
                 .build();
     }
 
     public CasaResponseDTO getById(Long id) {
-        Optional<Casa> casaOpt = casaRepository.findById(id);
+        Optional<CasaEntity> casaOpt = casaRepository.findById(id);
         if (casaOpt.isEmpty()) {
             throw new EntityNotFoundException("Casa não encontrada com o ID: " + id);
         }
-        Casa casa = casaOpt.get();
+        CasaEntity casaEntity = casaOpt.get();
         return CasaResponseDTO.builder()
-                .id(casa.getId())
-                .numero(casa.getNumero())
-                .responsavel(casa.getResponsavel())
-                .condominioNome(casa.getCondominio().getNome())
+                .id(casaEntity.getId())
+                .numero(casaEntity.getNumero())
+                .responsavel(casaEntity.getResponsavel())
+                .condominioNome(casaEntity.getCondominioEntity().getNome())
                 .build();
     }
 
@@ -74,19 +74,19 @@ public class CasaService {
     }
 
     public CasaResponseDTO putById(Long id, CasaRequestDTO casaDTO){
-        Casa casa = casaRepository.findById(id).orElseThrow(() ->
+        CasaEntity casaEntity = casaRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Casa nao encontrada com o id: " + id)
         );
 
-        casa.setNumero(casaDTO.getNumero());
-        casa.setResponsavel(casaDTO.getResponsavel());
-        Casa casaAtualizada = casaRepository.save(casa);
+        casaEntity.setNumero(casaDTO.getNumero());
+        casaEntity.setResponsavel(casaDTO.getResponsavel());
+        CasaEntity casaEntityAtualizada = casaRepository.save(casaEntity);
 
         return CasaResponseDTO.builder()
-                .id(casaAtualizada.getId())
-                .numero(casaAtualizada.getNumero())
-                .responsavel(casaAtualizada.getResponsavel())
-                .condominioNome(casaAtualizada.getCondominio().getNome())
+                .id(casaEntityAtualizada.getId())
+                .numero(casaEntityAtualizada.getNumero())
+                .responsavel(casaEntityAtualizada.getResponsavel())
+                .condominioNome(casaEntityAtualizada.getCondominioEntity().getNome())
                 .build();
     }
 

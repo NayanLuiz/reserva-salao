@@ -2,10 +2,10 @@ package br.com.nayan.reserva_salao.service;
 
 import br.com.nayan.reserva_salao.dto.ReservaRequestDTO;
 import br.com.nayan.reserva_salao.dto.ReservaResponseDTO;
-import br.com.nayan.reserva_salao.entity.Casa;
-import br.com.nayan.reserva_salao.entity.Condominio;
-import br.com.nayan.reserva_salao.entity.Reserva;
-import br.com.nayan.reserva_salao.entity.Salao;
+import br.com.nayan.reserva_salao.entity.CasaEntity;
+import br.com.nayan.reserva_salao.entity.CondominioEntity;
+import br.com.nayan.reserva_salao.entity.ReservaEntity;
+import br.com.nayan.reserva_salao.entity.SalaoEntity;
 import br.com.nayan.reserva_salao.repository.CasaRepository;
 import br.com.nayan.reserva_salao.repository.CondominioRepository;
 import br.com.nayan.reserva_salao.repository.ReservaRepository;
@@ -53,15 +53,19 @@ class ReservaServiceTest {
     void createReservaSucessfully() {
 
         ReservaRequestDTO reservaRequestDTO = buildReservaRequestDTO();
-        Reserva reservafeita = buildReserva();
-        Casa casa = buildCasa();
-        Salao salao = buildSalao();
-        Condominio condominio = buildCondominio();
+        ReservaEntity reservafeita = buildReserva();
+        CasaEntity casaEntity = buildCasa();
+        SalaoEntity salao = buildSalao();
+        CondominioEntity condominioEntity = buildCondominio();
 
-        when(casaRepository.findByNumero(reservaRequestDTO.getNumero())).thenReturn(Optional.of(casa));
-        when(salaoRepository.findByArea(reservaRequestDTO.getSalao())).thenReturn(Optional.of(salao));
-        when(condominioRepository.findByNome(reservaRequestDTO.getCondominio())).thenReturn(Optional.of(condominio));
-        when(reservaRepository.save(any(Reserva.class))).thenReturn(reservafeita);
+        when(casaRepository.findByNumero(reservaRequestDTO.getNumero()))
+                .thenReturn(Optional.of(casaEntity));
+        when(salaoRepository.findByArea(reservaRequestDTO.getSalao()))
+                .thenReturn(Optional.of(salao));
+        when(condominioRepository.findByNome(reservaRequestDTO.getCondominio()))
+                .thenReturn(Optional.of(condominioEntity));
+        when(reservaRepository.save(any(ReservaEntity.class)))
+                .thenReturn(reservafeita);
 
 
         ReservaResponseDTO reservaResponseDTO = reservaService.create(reservaRequestDTO);
@@ -77,10 +81,10 @@ class ReservaServiceTest {
 
         ReservaRequestDTO reservaRequestDTO = buildReservaRequestDTO();
         reservaRequestDTO.setNumero(null);
-        Reserva reservafeita = buildReserva();
-        Casa casa = buildCasa();
-        Salao salao = buildSalao();
-        Condominio condominio = buildCondominio();
+        ReservaEntity reservafeita = buildReserva();
+        CasaEntity casaEntity = buildCasa();
+        SalaoEntity salao = buildSalao();
+        CondominioEntity condominioEntity = buildCondominio();
 
         Throwable throwable = catchThrowable(() -> {
             reservaService.create(reservaRequestDTO);
@@ -95,10 +99,10 @@ class ReservaServiceTest {
 
         ReservaRequestDTO reservaRequestDTO = buildReservaRequestDTO();
         reservaRequestDTO.setCondominio(null);
-        Reserva reservafeita = buildReserva();
-        Casa casa = buildCasa();
-        Salao salao = buildSalao();
-        Condominio condominio = buildCondominio();
+        ReservaEntity reservafeita = buildReserva();
+        CasaEntity casaEntity = buildCasa();
+        SalaoEntity salao = buildSalao();
+        CondominioEntity condominioEntity = buildCondominio();
 
         Throwable throwable = catchThrowable(() -> {
             reservaService.create(reservaRequestDTO);
@@ -114,10 +118,10 @@ class ReservaServiceTest {
 
         ReservaRequestDTO reservaRequestDTO = buildReservaRequestDTO();
         reservaRequestDTO.setSalao(null);
-        Reserva reservafeita = buildReserva();
-        Casa casa = buildCasa();
-        Salao salao = buildSalao();
-        Condominio condominio = buildCondominio();
+        ReservaEntity reservafeita = buildReserva();
+        CasaEntity casaEntity = buildCasa();
+        SalaoEntity salao = buildSalao();
+        CondominioEntity condominioEntity = buildCondominio();
 
         Throwable throwable = catchThrowable(() -> {
             reservaService.create(reservaRequestDTO);
@@ -133,10 +137,10 @@ class ReservaServiceTest {
 
         ReservaRequestDTO reservaRequestDTO = buildReservaRequestDTO();
         reservaRequestDTO.setData(null);
-        Reserva reservafeita = buildReserva();
-        Casa casa = buildCasa();
-        Salao salao = buildSalao();
-        Condominio condominio = buildCondominio();
+        ReservaEntity reservafeita = buildReserva();
+        CasaEntity casaEntity = buildCasa();
+        SalaoEntity salao = buildSalao();
+        CondominioEntity condominioEntity = buildCondominio();
 
         Throwable throwable = catchThrowable(() -> {
             reservaService.create(reservaRequestDTO);
@@ -149,7 +153,7 @@ class ReservaServiceTest {
     @DisplayName("Get reservation by id successfully")
     void getById() {
 
-        Reserva reserva = buildReserva();
+        ReservaEntity reserva = buildReserva();
 
         when(reservaRepository.findById(1L)).thenReturn(Optional.of(reserva));
 
@@ -176,7 +180,7 @@ class ReservaServiceTest {
     @DisplayName("Delete reservation by id successfully")
     void deleteReservaById() {
 
-        Reserva reserva = buildReserva();
+        ReservaEntity reserva = buildReserva();
 
         when(reservaRepository.findById(1L)).thenReturn(Optional.of(reserva));
 
@@ -196,43 +200,43 @@ class ReservaServiceTest {
         return reservaRequestDTO;
     }
 
-    private Reserva buildReserva() {
-        Reserva reserva = new Reserva();
+    private ReservaEntity buildReserva() {
+        ReservaEntity reserva = new ReservaEntity();
         reserva.setId(1L);
         reserva.setData(LocalDate.now());
-        reserva.setCondominio(buildCondominio());
+        reserva.setCondominioEntity(buildCondominio());
         reserva.setSalao(buildSalao());
-        reserva.setCasa(buildCasa());
+        reserva.setCasaEntity(buildCasa());
 
         return reserva;
     }
 
-    private Condominio buildCondominio() {
-        Condominio condominio = new Condominio();
-        condominio.setId(1L);
-        condominio.setNome("Condominio A");
-        condominio.setCasa(List.of());
-        condominio.setSalao(List.of());
+    private CondominioEntity buildCondominio() {
+        CondominioEntity condominioEntity = new CondominioEntity();
+        condominioEntity.setId(1L);
+        condominioEntity.setNome("Condominio A");
+        condominioEntity.setCasaEntity(List.of());
+        condominioEntity.setSalao(List.of());
 
-        return condominio;
+        return condominioEntity;
     }
 
-    private Salao buildSalao(){
-        Salao salao = new Salao();
+    private SalaoEntity buildSalao(){
+        SalaoEntity salao = new SalaoEntity();
         salao.setId(1L);
         salao.setArea("Salao Principal");
-        salao.setCondominio(buildCondominio());
+        salao.setCondominioEntity(buildCondominio());
 
         return salao;
     }
 
-    private Casa buildCasa(){
-        Casa casa = new Casa();
-        casa.setId(1L);
-        casa.setNumero(101L);
-        casa.setResponsavel("Vinicius");
-        casa.setCondominio(buildCondominio());
+    private CasaEntity buildCasa(){
+        CasaEntity casaEntity = new CasaEntity();
+        casaEntity.setId(1L);
+        casaEntity.setNumero(101L);
+        casaEntity.setResponsavel("Vinicius");
+        casaEntity.setCondominioEntity(buildCondominio());
 
-        return casa;
+        return casaEntity;
     }
 }
