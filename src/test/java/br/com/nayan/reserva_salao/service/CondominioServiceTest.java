@@ -45,8 +45,6 @@ class CondominioServiceTest {
 
         CondominioRequestDTO condominioRequestDTO = buildCondominioDTO();
 
-        CasaEntity casaEntity = buildCasa();
-        SalaoEntity salao = buildSalao();
         CondominioEntity condominioEntity = buildCondominio();
 
         when(condominioRepository.existsByNome(condominioRequestDTO.getNome()))
