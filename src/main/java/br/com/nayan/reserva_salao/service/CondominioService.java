@@ -89,5 +89,6 @@ public class CondominioService {
     public void deleteCondominioById(Long id){
         condominioRepository.deleteById(id);
     }
+
 }
 

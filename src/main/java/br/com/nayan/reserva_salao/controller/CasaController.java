@@ -19,7 +19,7 @@ public class CasaController {
     @PostMapping
     public ResponseEntity<CasaResponseDTO> createCasa(@RequestBody CasaRequestDTO casaRequestDTO) {
         CasaResponseDTO casaResponseDTO = casaService.create(casaRequestDTO);
-        return ResponseEntity.ok(casaResponseDTO);
+        return ResponseEntity.status(201).body(casaResponseDTO);
     }
 
     @GetMapping("/{id}")
