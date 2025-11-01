@@ -11,12 +11,14 @@ import br.com.nayan.reserva_salao.repository.CondominioRepository;
 import br.com.nayan.reserva_salao.repository.ReservaRepository;
 import br.com.nayan.reserva_salao.repository.SalaoRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class ReservaService {
 
@@ -46,14 +48,19 @@ public class ReservaService {
 
         //Logica para criar reserva
 
-        CasaEntity casaEntity = casaRepository.findByNumero(reservaDTO.getNumero()).orElseThrow(() ->
-                new EntityNotFoundException("Casa nao encontrada id com o: " + reservaDTO.getNumero())
+        CasaEntity casaEntity = casaRepository.findByNumero(reservaDTO.getNumero()).orElseThrow(() -> {
+            return new EntityNotFoundException("Casa nao encontrada id com o id: " + reservaDTO.getNumero());
+                }
         );
-        CondominioEntity condominioEntity = condominioRepository.findByNome(reservaDTO.getCondominio()).orElseThrow(()->
-                new EntityNotFoundException("Condominio nao encontrado com o id: " + reservaDTO.getCondominio())
+        CondominioEntity condominioEntity = condominioRepository.findByNome(reservaDTO.getCondominio()).orElseThrow(()-> {
+            return new EntityNotFoundException("Condominio nao encontrado com o id: " + reservaDTO.getCondominio());
+                }
+
         );
-        SalaoEntity salao = salaoRepository.findByArea(reservaDTO.getSalao()).orElseThrow(( )->
-            new EntityNotFoundException("Salao nao encontrado com area: " + reservaDTO.getSalao())
+        SalaoEntity salao = salaoRepository.findByArea(reservaDTO.getSalao()).orElseThrow(( )-> {
+            return new EntityNotFoundException("Salao nao encontrado com area: " + reservaDTO.getSalao());
+                }
+
         );
 
         ReservaEntity reserva = new ReservaEntity();
