@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="painelPrincipal" prefHeight="350.0" prefWidth="729.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.nayan.reserva_salao.view.MenuViewController">
+
+    <left>
+        <VBox prefHeight="534.0" prefWidth="94.0" spacing="10" style="-fx-background-color: #2c3e50;">
+            <padding>
+                <Insets bottom="20" left="20" right="20" top="20" />
+            </padding>
+
+            <Label text="RESERVAS" textFill="WHITE">
+                <font><Font name="System Bold" size="18.0" /></font>
+            </Label>
+
+            <Separator />
+
+            <Button maxWidth="Infinity" onAction="#onAbrirHome" text="Início" />
+            <Button maxWidth="Infinity" onAction="#onAbrirReservas" text="Gerenciar Reservas" />
+         <ImageView fitHeight="125.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+               <Image url="@imagens/logo.png" />
+            </image>
+         </ImageView>
+        </VBox>
+    </left>
+
+    <center>
+    </center>
+   <center>
+      <ImageView fitHeight="567.0" fitWidth="1025.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+         <image>
+            <Image url="@imagens/1-ekwce98m.jpg" />
+         </image>
+      </ImageView>
+   </center>
+
+</BorderPane>

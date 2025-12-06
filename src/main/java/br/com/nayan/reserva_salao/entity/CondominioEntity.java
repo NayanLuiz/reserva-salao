@@ -19,9 +19,9 @@ public class CondominioEntity {
     @Column(nullable = false, unique = true, length = 100)
     private String nome;
 
-    @OneToMany(mappedBy = "condominio", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "condominioEntity", fetch = FetchType.LAZY)
     private List<SalaoEntity> salao;
 
-    @OneToMany(mappedBy = "condominio", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "condominioEntity", fetch = FetchType.LAZY)
     private List<CasaEntity> casaEntity;
 }

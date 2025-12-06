@@ -3,8 +3,8 @@ spring:
     name: app
   datasource:
     url: jdbc:postgresql://localhost:5432/app
-    username: admin
-    password: admin123
+    username: postgres
+    password: admin
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:

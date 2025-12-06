@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" prefHeight="443.0" prefWidth="620.0" spacing="20" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+
+    <ImageView fitHeight="189.0" fitWidth="223.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+         <Image url="@imagens/logo.png" />
+      </image>
+    </ImageView>
+
+    <Label text="Bem-vindo ao Sistema de Reservas">
+        <font> <Font size="24.0" /> </font>
+    </Label>
+
+    <Label text="Desenvolvido por: Nayan e Alan" textFill="#666666">
+        <font> <Font name="System Bold" size="16.0" /> </font>
+    </Label>
+
+</VBox>
