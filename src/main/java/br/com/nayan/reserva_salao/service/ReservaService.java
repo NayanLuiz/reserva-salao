@@ -32,7 +32,7 @@ public class ReservaService {
     private CondominioRepository condominioRepository;
 
     public ReservaResponseDTO create(ReservaRequestDTO reservaDTO) {
-        // Validações básicas
+        // validações
         if(Objects.isNull(reservaDTO.getNumero())) {
             throw new IllegalArgumentException("A reserva deve estar associada a uma casa.");
         }
@@ -46,7 +46,7 @@ public class ReservaService {
             throw new IllegalArgumentException("A reserva deve estar associada a um salao");
         }
 
-        //Logica para criar reserva
+        //logica pra criar reserva
 
         CasaEntity casaEntity = casaRepository.findByNumero(reservaDTO.getNumero()).orElseThrow(() -> {
             return new EntityNotFoundException("Casa nao encontrada id com o id: " + reservaDTO.getNumero());

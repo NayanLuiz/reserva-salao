@@ -84,12 +84,12 @@ public class ReservaViewController {
             dto.setData(dpDataReserva.getValue());
 
             if (idParaEditar == null) {
-                // MODO CRIAR
+                // criar
                 ReservaResponseDTO salvo = reservaService.create(dto);
                 dadosMaster.add(salvo);
                 mostrarAlerta("Sucesso", "Reserva criada!");
             } else {
-                // MODO ALTERAR
+                // alterar
                 // como o service original não tem update pronto, tipo (deletar + criar)
                 // era bom ter um metodo update no service
                 reservaService.deleteReservaById(idParaEditar);

@@ -15,7 +15,7 @@ public class MenuViewController {
     @FXML
     private BorderPane painelPrincipal;
 
-    //  contexto do Spring para carregar as outras telas com injeção de dependência
+    //  bagulho do Spring para carregar as outras telas com injeção de dependência
     private final ApplicationContext context;
 
     public MenuViewController(ApplicationContext context) {
@@ -41,7 +41,7 @@ public class MenuViewController {
     private void carregarTela(String caminhoFxml) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(caminhoFxml));
-            loader.setControllerFactory(context::getBean); // O Pulo do Gato do Spring
+            loader.setControllerFactory(context::getBean); // o Pulo do Gato do Spring
             Parent tela = loader.load();
             painelPrincipal.setCenter(tela);
         } catch (IOException e) {

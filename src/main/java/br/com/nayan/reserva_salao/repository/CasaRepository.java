@@ -10,9 +10,12 @@ import java.util.Optional;
 
 @Repository
 public interface CasaRepository extends JpaRepository<CasaEntity, Long> {
-    List<CasaEntity> findByCondominio(CondominioEntity condominioEntity);
+
+    List<CasaEntity> findByCondominioEntity(CondominioEntity condominioEntity);
+
     Boolean existsByNumero(Long numero);
+
     Optional<CasaEntity> findByNumero(Long numero);
-    Object findByResponsavel(String responsavel);
-    Object existByCondominio(String responsavel);
+
+    Optional<CasaEntity> findByResponsavel(String responsavel);
 }

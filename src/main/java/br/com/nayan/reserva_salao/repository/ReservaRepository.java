@@ -14,7 +14,10 @@ import java.util.List;
 public interface ReservaRepository extends JpaRepository<ReservaEntity, Long> {
 
     List<ReservaEntity> findByData(LocalDate data);
-    List<ReservaEntity> findByCondominio(CondominioEntity condominioEntity);
+
+    List<ReservaEntity> findByCondominioEntity(CondominioEntity condominioEntity);
+    
     List<ReservaEntity> findBySalao(SalaoEntity salao);
-    List<ReservaEntity> findByCasa(CasaEntity casaEntity);
+
+    List<ReservaEntity> findByCasaEntity(CasaEntity casaEntity);
 }

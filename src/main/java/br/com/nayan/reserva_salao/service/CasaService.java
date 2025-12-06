@@ -21,7 +21,7 @@ public class CasaService {
     private CondominioService condominioService;
 
     public CasaResponseDTO create(CasaRequestDTO casaDTO) {
-        // Validações básicas
+        // validações basicas
         if (Objects.isNull(casaDTO.getNumero())) {
             throw new IllegalArgumentException("A casa deve estar associada a um numero");
         }
@@ -32,7 +32,7 @@ public class CasaService {
             throw new IllegalArgumentException("A casa deve estar associada a um condominio");
         }
 
-        //Logica para criar casa
+        //logica para criar casa
         if(casaRepository.existsByNumero(casaDTO.getNumero())){
             throw new IllegalArgumentException("Casa com esse numero ja existe.");
         }

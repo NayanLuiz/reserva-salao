@@ -19,7 +19,7 @@ public class SalaoService {
     private SalaoRepository salaoRepository;
 
     public SalaoResponseDTO create(SalaoRequestDTO salaoDTO){
-        // Validações básicas
+        // validações
         if(Objects.isNull(salaoDTO.getArea()) || salaoDTO.getArea().isBlank()){
             throw new IllegalArgumentException("A área do salão não pode ser nula ou vazia");
         }

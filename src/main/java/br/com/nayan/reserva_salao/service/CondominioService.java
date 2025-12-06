@@ -29,11 +29,11 @@ public class CondominioService {
     private CasaRepository casaRepository;
 
     public CondominioResponseDTO create(CondominioRequestDTO condominioDTO) {
-        // Validações básicas
+        // validações
         if(Objects.isNull(condominioDTO.getNome())){
             throw new IllegalArgumentException("O nome do condominio é obrigatório.");
         }
-        //Logica para criar condominio
+        //logica para criar condominio
         if(condominioRepository.existsByNome(condominioDTO.getNome())){;
             throw new IllegalArgumentException("Condominio com esse nome ja existe.");
         }
