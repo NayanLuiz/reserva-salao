@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class SalaoRequestDTO {
-    private String Area;
-    private String Condominio;
+    private String area;
+    private String condominio;
 }

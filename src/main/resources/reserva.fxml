@@ -42,8 +42,8 @@
     </GridPane>
 
     <HBox spacing="10" alignment="CENTER">
-        <Button text="salvar / atualizar" onAction="#onSalvar" style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
-        <Button text="limpar campos" onAction="#limparCampos"/>
+        <Button text="Salvar / Atualizar" onAction="#onSalvar" style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
+        <Button text="Limpar Campos" onAction="#limparCampos"/>
     </HBox>
 
     <Separator/>
@@ -60,8 +60,8 @@
     </TableView>
 
     <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button text="editar Selecionado" onAction="#onEditar" style="-fx-background-color: #f39c12; -fx-text-fill: white;"/>
-        <Button text="excluir Selecionado" onAction="#onExcluir" style="-fx-background-color: #c0392b; -fx-text-fill: white;"/>
+        <Button text="Editar Selecionado" onAction="#onEditar" style="-fx-background-color: #f39c12; -fx-text-fill: white;"/>
+        <Button text="Excluir Selecionado" onAction="#onExcluir" style="-fx-background-color: #c0392b; -fx-text-fill: white;"/>
     </HBox>
 
 </VBox>
