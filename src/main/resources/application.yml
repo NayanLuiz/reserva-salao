@@ -1,5 +1,5 @@
 server:
-  port: 8081  # Porta nova para não dar conflito
+  port: 8080  # Porta nova para não dar conflito
 
  #simulaçao do banco pra fazer a interface
 spring:

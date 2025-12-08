@@ -3,43 +3,38 @@ package br.com.nayan.reserva_salao.controller;
 import br.com.nayan.reserva_salao.dto.ReservaRequestDTO;
 import br.com.nayan.reserva_salao.dto.ReservaResponseDTO;
 import br.com.nayan.reserva_salao.service.ReservaService;
-import lombok.extern.slf4j.Slf4j;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Slf4j
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/reserva")
+@RequiredArgsConstructor
 public class ReservaController {
 
     private final ReservaService reservaService;
 
-    public ReservaController(ReservaService reservaService) {
-        this.reservaService = reservaService;
+    @PostMapping
+    public ResponseEntity<ReservaResponseDTO> createReserva(@RequestBody ReservaRequestDTO requestDTO) {
+        return ResponseEntity.ok(reservaService.create(requestDTO));
     }
 
-    @PostMapping
-    public ResponseEntity<ReservaResponseDTO> createReserva(@RequestBody ReservaRequestDTO reservaRequestDTO) {
-        ReservaResponseDTO reservaResponseDTO = reservaService.create(reservaRequestDTO);
-        return ResponseEntity.ok(reservaResponseDTO);
+    @GetMapping
+    public ResponseEntity<List<ReservaResponseDTO>> listarReservas() {
+        return ResponseEntity.ok(reservaService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReservaResponseDTO> getReservaById(@PathVariable Long id){
-        ReservaResponseDTO reservaResponseDTO = reservaService.getById(id);
-        return ResponseEntity.ok(reservaResponseDTO);
+    public ResponseEntity<ReservaResponseDTO> getReservaById(@PathVariable Long id) {
+        return ResponseEntity.ok(reservaService.getById(id));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservaById(@PathVariable Long id) {
-        reservaService.deleteReservaById(id);
+        reservaService.delete(id);
         return ResponseEntity.noContent().build();
     }
-
-//    @PutMapping("/{id}")
-//    public ResponseEntity<ReservaResponseDTO> updateReserva(@PathVariable Long id, ReservaRequestDTO requestDTO){
-//        ReservaResponseDTO reservaResponseDTO = reservaService.putById(id, requestDTO);
-//        return ResponseEntity.ok(reservaResponseDTO);
-//    }
-
 }

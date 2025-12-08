@@ -5,164 +5,82 @@ import br.com.nayan.reserva_salao.dto.ReservaResponseDTO;
 import br.com.nayan.reserva_salao.service.ReservaService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
 
+import java.net.URL;
 import java.time.LocalDate;
-import java.util.Objects;
+import java.util.List;
+import java.util.ResourceBundle;
 
-@Component
-public class ReservaViewController {
+@Controller
+@RequiredArgsConstructor
+public class ReservaViewController implements Initializable {
 
-    @Autowired
-    private ReservaService reservaService;
+    private final ReservaService reservaService;
 
-    // campos do formulário
-    @FXML private TextField txtNumeroCasa;
-    @FXML private TextField txtNomeCondominio;
-    @FXML private TextField txtNomeSalao;
-    @FXML private DatePicker dpDataReserva;
-
-    // vriável para controlar edição (se null, é novo cadastro)
-    private Long idParaEditar = null;
-
-    // campos de Filtro
+    // filtros
     @FXML private TextField filtroCondominio;
     @FXML private TextField filtroSalao;
     @FXML private DatePicker filtroData;
 
-    // tabela
+    // campos do formulário
+    @FXML private TextField txtNomeCondominio;
+    @FXML private TextField txtNomeSalao;
+    @FXML private TextField txtNumeroCasa;
+    @FXML private DatePicker dpDataReserva;
+
+    // tabela e colunas
     @FXML private TableView<ReservaResponseDTO> tabelaReservas;
     @FXML private TableColumn<ReservaResponseDTO, Long> colId;
-    @FXML private TableColumn<ReservaResponseDTO, Long> colCasa;
     @FXML private TableColumn<ReservaResponseDTO, String> colCondominio;
     @FXML private TableColumn<ReservaResponseDTO, String> colSalao;
+    @FXML private TableColumn<ReservaResponseDTO, Long> colCasa;
     @FXML private TableColumn<ReservaResponseDTO, LocalDate> colData;
 
-    // listas para a tabela
-    private ObservableList<ReservaResponseDTO> dadosMaster = FXCollections.observableArrayList();
-    private FilteredList<ReservaResponseDTO> dadosFiltrados;
+    private final ObservableList<ReservaResponseDTO> dadosMaster = FXCollections.observableArrayList();
+    private Long idParaEditar = null;
 
-    @FXML
-    public void initialize() {
-        configurarColunas();
-
-        // inicializa a lista filtrada
-        dadosFiltrados = new FilteredList<>(dadosMaster, p -> true);
-        tabelaReservas.setItems(dadosFiltrados);
-
-        // add listeners para os filtros (filtra enquanto digita)
-        filtroCondominio.textProperty().addListener((obs, oldVal, newVal) -> aplicarFiltros());
-        filtroSalao.textProperty().addListener((obs, oldVal, newVal) -> aplicarFiltros());
-        filtroData.valueProperty().addListener((obs, oldVal, newVal) -> aplicarFiltros());
-
-        // carrega dados iniciais (simulado ou real se tiver o getAll no service)
-        // carregarDadosDoBanco();
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        configurarTabela();
+        carregarReservas();
     }
 
-    private void configurarColunas() {
+    private void configurarTabela() {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colCasa.setCellValueFactory(new PropertyValueFactory<>("numero"));
         colCondominio.setCellValueFactory(new PropertyValueFactory<>("condominio"));
         colSalao.setCellValueFactory(new PropertyValueFactory<>("salao"));
+        colCasa.setCellValueFactory(new PropertyValueFactory<>("numero"));
         colData.setCellValueFactory(new PropertyValueFactory<>("data"));
+
+        tabelaReservas.setItems(dadosMaster);
     }
 
-    // lógica CRUD
-
-    @FXML
-    public void onSalvar() {
+    private void carregarReservas() {
         try {
-            ReservaRequestDTO dto = new ReservaRequestDTO();
-            dto.setNumero(Long.parseLong(txtNumeroCasa.getText()));
-            dto.setCondominio(txtNomeCondominio.getText());
-            dto.setSalao(txtNomeSalao.getText());
-            dto.setData(dpDataReserva.getValue());
-
-            if (idParaEditar == null) {
-                // criar
-                ReservaResponseDTO salvo = reservaService.create(dto);
-                dadosMaster.add(salvo);
-                mostrarAlerta("Sucesso", "Reserva criada!");
-            } else {
-                // alterar
-                // como o service original não tem update pronto, tipo (deletar + criar)
-                // era bom ter um metodo update no service
-                reservaService.deleteReservaById(idParaEditar);
-                ReservaResponseDTO atualizado = reservaService.create(dto);
-
-                // atualiza visualmente: remove o antigo, põe o novo
-                dadosMaster.removeIf(r -> r.getId().equals(idParaEditar));
-                dadosMaster.add(atualizado);
-
-                mostrarAlerta("Sucesso", "Reserva atualizada!");
-                idParaEditar = null; // volta pra o modo criação
-            }
-            limparCampos();
-
+            dadosMaster.clear();
+            List<ReservaResponseDTO> lista = reservaService.findAll();
+            dadosMaster.addAll(lista);
         } catch (Exception e) {
-            mostrarAlerta("Erro", e.getMessage());
+            mostrarAlerta("Erro", "Falha ao carregar reservas: " + e.getMessage());
         }
     }
 
     @FXML
-    public void onEditar() {
-        ReservaResponseDTO selecionada = tabelaReservas.getSelectionModel().getSelectedItem();
-        if (selecionada != null) {
-            // joga os dados da tabela para os campos
-            txtNumeroCasa.setText(String.valueOf(selecionada.getNumero()));
-            txtNomeCondominio.setText(selecionada.getCondominio());
-            txtNomeSalao.setText(selecionada.getSalao());
-            dpDataReserva.setValue(selecionada.getData());
-
-            // marca o ID para saber que é uma edição
-            idParaEditar = selecionada.getId();
-        } else {
-            mostrarAlerta("Atenção", "Selecione uma reserva para editar.");
-        }
-    }
-
-    @FXML
-    public void onExcluir() {
-        ReservaResponseDTO selecionada = tabelaReservas.getSelectionModel().getSelectedItem();
-        if (selecionada != null) {
-            reservaService.deleteReservaById(selecionada.getId());
-            dadosMaster.remove(selecionada);
-        }
-    }
-
-    // lógica de Filtros
-    private void aplicarFiltros() {
-        dadosFiltrados.setPredicate(reserva -> {
-            // se não houver filtros, mostra tudo
-            if (reserva == null) return false;
-
-            String condFilter = filtroCondominio.getText().toLowerCase();
-            String salaoFilter = filtroSalao.getText().toLowerCase();
-            LocalDate dataFilter = filtroData.getValue();
-
-            boolean matchesCondominio = condFilter.isEmpty() || reserva.getCondominio().toLowerCase().contains(condFilter);
-            boolean matchesSalao = salaoFilter.isEmpty() || reserva.getSalao().toLowerCase().contains(salaoFilter);
-            boolean matchesData = dataFilter == null || Objects.equals(reserva.getData(), dataFilter);
-
-            // retorna verdadeiro apenas se atender aos 3 critérios
-            return matchesCondominio && matchesSalao && matchesData;
-        });
-    }
-
-    @FXML
-    public void limparFiltros() {
+    private void limparFiltros() {
         filtroCondominio.clear();
         filtroSalao.clear();
         filtroData.setValue(null);
+        carregarReservas();
     }
 
     @FXML
-    public void limparCampos() {
+    private void limparCampos() {
         txtNumeroCasa.clear();
         txtNomeCondominio.clear();
         txtNomeSalao.clear();
@@ -170,11 +88,57 @@ public class ReservaViewController {
         idParaEditar = null;
     }
 
+    @FXML
+    private void onSalvar() {
+        try {
+            ReservaRequestDTO dto = new ReservaRequestDTO();
+            dto.setNumero(Long.parseLong(txtNumeroCasa.getText()));
+            dto.setCondominio(txtNomeCondominio.getText());
+            dto.setSalao(txtNomeSalao.getText());
+            dto.setData(dpDataReserva.getValue());
+
+            reservaService.create(dto);
+            carregarReservas();
+            limparCampos();
+            mostrarAlerta("Sucesso", "Reserva criada!");
+        } catch (NumberFormatException nfe) {
+            mostrarAlerta("Erro", "Número da casa inválido.");
+        } catch (Exception ex) {
+            mostrarAlerta("Erro", ex.getMessage());
+        }
+    }
+
+    @FXML
+    private void onEditar() {
+        ReservaResponseDTO selecionada = tabelaReservas.getSelectionModel().getSelectedItem();
+        if (selecionada == null) {
+            mostrarAlerta("Aviso", "Selecione uma reserva para editar.");
+            return;
+        }
+        idParaEditar = selecionada.getId();
+        txtNumeroCasa.setText(String.valueOf(selecionada.getNumero()));
+        txtNomeCondominio.setText(selecionada.getCondominio());
+        txtNomeSalao.setText(selecionada.getSalao());
+        dpDataReserva.setValue(selecionada.getData());
+    }
+
+    @FXML
+    private void onExcluir() {
+        ReservaResponseDTO selecionada = tabelaReservas.getSelectionModel().getSelectedItem();
+        if (selecionada == null) {
+            mostrarAlerta("Aviso", "Selecione uma reserva para excluir.");
+            return;
+        }
+        reservaService.delete(selecionada.getId());
+        carregarReservas();
+        mostrarAlerta("Sucesso", "Reserva excluída!");
+    }
+
     private void mostrarAlerta(String titulo, String msg) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(msg);
-        alert.showAndWait();
+        Alert a = new Alert(Alert.AlertType.INFORMATION);
+        a.setTitle(titulo);
+        a.setHeaderText(null);
+        a.setContentText(msg);
+        a.showAndWait();
     }
 }

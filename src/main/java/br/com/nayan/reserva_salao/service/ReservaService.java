@@ -11,148 +11,97 @@ import br.com.nayan.reserva_salao.repository.CondominioRepository;
 import br.com.nayan.reserva_salao.repository.ReservaRepository;
 import br.com.nayan.reserva_salao.repository.SalaoRepository;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
-@Slf4j
 @Service
+@RequiredArgsConstructor
 public class ReservaService {
 
-    @Autowired
-    private ReservaRepository reservaRepository;
-    @Autowired
-    private CasaRepository casaRepository;
-    @Autowired
-    private SalaoRepository salaoRepository;
-    @Autowired
-    private CondominioRepository condominioRepository;
+    private final ReservaRepository reservaRepository;
+    private final CasaRepository casaRepository;
+    private final CondominioRepository condominioRepository;
+    private final SalaoRepository salaoRepository;
 
-    public ReservaResponseDTO create(ReservaRequestDTO reservaDTO) {
-        // validações
-        if(Objects.isNull(reservaDTO.getNumero())) {
-            throw new IllegalArgumentException("A reserva deve estar associada a uma casa.");
-        }
-        if(Objects.isNull(reservaDTO.getCondominio())){
-            throw new IllegalArgumentException("A reserva deve estar associada a um condominio");
-        }
-        if(!Optional.ofNullable(reservaDTO.getData()).isPresent()){
-            throw new IllegalArgumentException("A reserva deve estar associada a uma data");
-        }
-        if(Objects.isNull(reservaDTO.getSalao())){
-            throw new IllegalArgumentException("A reserva deve estar associada a um salao");
-        }
+    // CRIAR RESERVA
+    public ReservaResponseDTO create(ReservaRequestDTO dto) {
 
-        //logica pra criar reserva
+        CasaEntity casa = casaRepository.findByNumero(dto.getNumero())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Casa não encontrada com número: " + dto.getNumero()));
 
-        CasaEntity casaEntity = casaRepository.findByNumero(reservaDTO.getNumero()).orElseThrow(() -> {
-            return new EntityNotFoundException("Casa nao encontrada id com o id: " + reservaDTO.getNumero());
-                }
-        );
-        CondominioEntity condominioEntity = condominioRepository.findByNome(reservaDTO.getCondominio()).orElseThrow(()-> {
-            return new EntityNotFoundException("Condominio nao encontrado com o id: " + reservaDTO.getCondominio());
-                }
+        CondominioEntity condominio = condominioRepository.findByNome(dto.getCondominio())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Condomínio não encontrado: " + dto.getCondominio()));
 
-        );
-        SalaoEntity salao = salaoRepository.findByArea(reservaDTO.getSalao()).orElseThrow(( )-> {
-            return new EntityNotFoundException("Salao nao encontrado com area: " + reservaDTO.getSalao());
-                }
+        SalaoEntity salao = salaoRepository.findByArea(dto.getSalao())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Salão não encontrado: " + dto.getSalao()));
 
-        );
-
-        ReservaEntity reserva = new ReservaEntity();
-        reserva.setCasaEntity(casaEntity);
-        reserva.setData(reservaDTO.getData());
-        reserva.setCondominioEntity(condominioEntity);
-        reserva.setSalao(salao);
-
-        ReservaEntity reservaSalva = reservaRepository.save(reserva);
-
-        return ReservaResponseDTO.builder()
-                .id(reservaSalva.getId())
-                .numero(reservaSalva.getCasaEntity().getId())
-                .salao(reservaSalva.getSalao().getArea())
-                .condominio(reservaSalva.getSalao().getCondominioEntity().getNome())
-                .data(reservaSalva.getData())
+        ReservaEntity reserva = ReservaEntity.builder()
+                .data(dto.getData())
+                .casaEntity(casa)
+                .condominioEntity(condominio)
+                .salao(salao)
                 .build();
-    }
 
-    public ReservaResponseDTO getById(Long id) {
-        ReservaEntity reserva = reservaRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("Reserva nao encontrada com o id: " + id)
-        );
+        reservaRepository.save(reserva);
 
         return ReservaResponseDTO.builder()
                 .id(reserva.getId())
-                .numero(reserva.getCasaEntity().getId())
-                .salao(reserva.getSalao().getArea())
-                .condominio(reserva.getCondominioEntity().getNome())
+                .numero(casa.getNumero())
+                .condominio(condominio.getNome())
+                .salao(salao.getArea())
                 .data(reserva.getData())
                 .build();
     }
-    public void deleteReservaById(Long id) {
-//        Reserva reserva = reservaRepository.findById(id).orElseThrow(() ->
-//                new EntityNotFoundException("Reserva nao encontrada com o id: " + id)
-//        );
+
+    // LISTAR TODOS
+    public List<ReservaResponseDTO> findAll() {
+        return reservaRepository.findAll()
+                .stream()
+                .map(reserva -> ReservaResponseDTO.builder()
+                        .id(reserva.getId())
+                        .numero(reserva.getCasaEntity().getNumero())
+                        .condominio(reserva.getCondominioEntity().getNome())
+                        .salao(reserva.getSalao().getArea())
+                        .data(reserva.getData())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    // BUSCAR POR ID
+    public ReservaResponseDTO getById(Long id) {
+        ReservaEntity reserva = reservaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Reserva não encontrada com id: " + id));
+
+        return ReservaResponseDTO.builder()
+                .id(reserva.getId())
+                .numero(reserva.getCasaEntity().getNumero())
+                .condominio(reserva.getCondominioEntity().getNome())
+                .salao(reserva.getSalao().getArea())
+                .data(reserva.getData())
+                .build();
+    }
+
+    // EXCLUIR
+    public void delete(Long id) {
+        if (!reservaRepository.existsById(id)) {
+            throw new EntityNotFoundException("Reserva não encontrada com id: " + id);
+        }
         reservaRepository.deleteById(id);
     }
 
+    public void deleteReservaById(Long id) {
 
+        ReservaEntity reserva = reservaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Reserva não encontrada com o id: " + id));
 
-//    public ReservaResponseDTO putById(Long id, ReservaRequestDTO reservaDTO){
-//
-//        if(Objects.isNull(reservaDTO.getNumero())) {
-//            throw new IllegalArgumentException("A reserva deve estar associada a uma casa.");
-//        }
-//        // create / put / getById - ajuste do builder do DTO
-//        return ReservaResponseDTO.builder()
-//                .id(reservaDTO.getId())
-//                .numero(Novareserva.getCasa().getNumero()) // ou .getId() se não existir getNumero()
-//                .salao(Novareserva.getSalao().getArea())
-//                .condominio(Novareserva.getCondominio().getNome()) // usar o condominio da reserva, não do salao
-//                .data(Novareserva.getData())
-//                .build();
-//
-//        if(Objects.isNull(reservaDTO.getCondominio())){
-//            throw new IllegalArgumentException("A reserva deve estar associada a um condominio");
-//        }
-//        if(!Optional.ofNullable(reservaDTO.getData()).isPresent()){
-//            throw new IllegalArgumentException("A reserva deve estar associada a uma data");
-//        }
-//        if(Objects.isNull(reservaDTO.getSalao())){
-//            throw new IllegalArgumentException("A reserva deve estar associada a um salao");
-//        }
-//
-//        Casa casa = casaRepository.findByNumero(reservaDTO.getNumero()).orElseThrow(() ->
-//                new EntityNotFoundException("Casa nao encontrada id com o: " + reservaDTO.getNumero())
-//        );
-//        Condominio condominio = condominioRepository.findByNome(reservaDTO.getCondominio()).orElseThrow(()->
-//                new EntityNotFoundException("Condominio nao encontrado com o id: " + reservaDTO.getCondominio())
-//        );
-//        Salao salao = salaoRepository.findByArea(reservaDTO.getSalao()).orElseThrow(( )->
-//                new EntityNotFoundException("Salao nao encontrado com area: " + reservaDTO.getSalao())
-//        );
-//
-//        Reserva reserva = reservaRepository.findById(id).orElseThrow(() ->
-//                new EntityNotFoundException("Reserva nao encontrada com o id: " + id)
-//        );
-//
-//        reserva.setCasa(casa);
-//        reserva.setData(reservaDTO.getData());
-//        reserva.setCondominio(condominio);
-//        reserva.setSalao(salao);
-//
-//        Reserva reservaSalva = reservaRepository.save(reserva);
-//
-//        return ReservaResponseDTO.builder()
-//                .id(reservaSalva.getId())
-//                .numero(reservaSalva.getCasa().getId())
-//                .salao(reservaSalva.getSalao().getArea())
-//                .condominio(reservaSalva.getSalao().getCondominio().getNome())
-//                .data(reservaSalva.getData())
-//                .build();
-//    }
+        reservaRepository.delete(reserva);
+    }
+
 }

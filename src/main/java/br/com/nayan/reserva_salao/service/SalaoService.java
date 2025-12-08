@@ -51,6 +51,10 @@ public class SalaoService {
                 .build();
     }
 
+
+
+
+
     public void deleteSalaoById(Long id){
 //        if(!salaoRepository.existsById(id)){
 //            throw new EntityNotFoundException("Salão com ID " + id + " não encontrado.");
