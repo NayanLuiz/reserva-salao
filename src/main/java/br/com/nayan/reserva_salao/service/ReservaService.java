@@ -75,7 +75,7 @@ public class ReservaService {
 
     // BUSCAR POR ID
     public ReservaResponseDTO getById(Long id) {
-        ReservaEntity reserva = reservaRepository.findById(id)
+            ReservaEntity reserva = reservaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Reserva não encontrada com id: " + id));
 
@@ -103,5 +103,4 @@ public class ReservaService {
 
         reservaRepository.delete(reserva);
     }
-
 }
