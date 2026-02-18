@@ -107,6 +107,6 @@ class ReservaControllerTest {
         )
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isNoContent());
 
-        verify(reservaService, times(1)).deleteReservaById(reservaId);
+        verify(reservaService, times(1)).delete(reservaId);
     }
 }

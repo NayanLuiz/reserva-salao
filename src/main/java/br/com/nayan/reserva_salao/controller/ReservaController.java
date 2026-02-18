@@ -4,6 +4,7 @@ import br.com.nayan.reserva_salao.dto.ReservaRequestDTO;
 import br.com.nayan.reserva_salao.dto.ReservaResponseDTO;
 import br.com.nayan.reserva_salao.service.ReservaService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class ReservaController {
     private final ReservaService reservaService;
 
     @PostMapping
-    public ResponseEntity<ReservaResponseDTO> createReserva(@RequestBody ReservaRequestDTO requestDTO) {
+    public ResponseEntity<ReservaResponseDTO> createReserva(@Valid @RequestBody ReservaRequestDTO requestDTO) {
         return ResponseEntity.ok(reservaService.create(requestDTO));
     }
 

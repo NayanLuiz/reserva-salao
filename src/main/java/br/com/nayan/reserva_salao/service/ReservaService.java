@@ -95,12 +95,4 @@ public class ReservaService {
         }
         reservaRepository.deleteById(id);
     }
-
-    public void deleteReservaById(Long id) {
-
-        ReservaEntity reserva = reservaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reserva não encontrada com o id: " + id));
-
-        reservaRepository.delete(reserva);
-    }
 }
