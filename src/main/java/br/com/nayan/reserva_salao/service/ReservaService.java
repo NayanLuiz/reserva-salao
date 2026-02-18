@@ -29,6 +29,20 @@ public class ReservaService {
     // CRIAR RESERVA
     public ReservaResponseDTO create(ReservaRequestDTO dto) {
 
+        // Validações básicas
+        if (dto.getNumero() == null) {
+            throw new IllegalArgumentException("A reserva deve estar associada a uma casa.");
+        }
+        if (dto.getCondominio() == null || dto.getCondominio().isBlank()) {
+            throw new IllegalArgumentException("A reserva deve estar associada a um condominio");
+        }
+        if (dto.getSalao() == null || dto.getSalao().isBlank()) {
+            throw new IllegalArgumentException("A reserva deve estar associada a um salao");
+        }
+        if (dto.getData() == null) {
+            throw new IllegalArgumentException("A reserva deve estar associada a uma data");
+        }
+
         CasaEntity casa = casaRepository.findByNumero(dto.getNumero())
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Casa não encontrada com número: " + dto.getNumero()));
@@ -94,13 +108,5 @@ public class ReservaService {
             throw new EntityNotFoundException("Reserva não encontrada com id: " + id);
         }
         reservaRepository.deleteById(id);
-    }
-
-    public void deleteReservaById(Long id) {
-
-        ReservaEntity reserva = reservaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reserva não encontrada com o id: " + id));
-
-        reservaRepository.delete(reserva);
     }
 }
