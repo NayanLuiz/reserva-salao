@@ -173,7 +173,7 @@ class ReservaServiceTest {
             reservaService.getById(5L);
         });
         assertThat(throwable).isInstanceOf(EntityNotFoundException.class)
-                .hasMessage("Reserva nao encontrada com o id: 5");
+                .hasMessage("Reserva não encontrada com id: 5");
     }
 
     @Test
